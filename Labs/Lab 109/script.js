@@ -15,8 +15,43 @@ function init(){
 function getJSON() {
   var array = [];
   $.getJSON("data.json", function(json) {
-    for (var i = 0; i < json.length; i++){
-      array[i] = json[i];
+    for (var i = 0; i < json.crimes.length; i++){
+      array[i] = json.crimes[i];
     }
+    /* mySort
+    var frontCount = 0;
+    var backCount = array.length-1;
+
+    for(var i = 0; i < array.length/2; i++){
+      for(var j = frontCount; j < backCount; j++){
+        if(array[j].stopandsearch.length > array[j+1].stopandsearch.length){
+          var temp = array[j];
+          array[j] = array[j+1];
+          array[j+1] = temp;
+        }
+      }
+      backCount--;
+      for(var k = backCount; k > frontCount; k--){
+        if(array[k].stopandsearch.length < array[k-1].stopandsearch.length){
+          var temp = array[k];
+          array[k] = array[k-1];
+          array[k-1] = temp;
+        }
+      }
+      frontCount++;
+    }
+    */
+
+    /* bubbleSort
+
+    */
+
+    /* selectionSort
+
+    */
+
+    /* insertSort
+
+    */
   });
 }
