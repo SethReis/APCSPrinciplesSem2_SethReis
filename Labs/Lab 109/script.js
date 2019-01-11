@@ -43,15 +43,42 @@ function getJSON() {
     */
 
     /* bubbleSort
-
+    for (var i = array.length-1; i > 0; i--){
+      for(var j = 0; j < i; j++){
+        if (array[j].stopandsearch.length > array[j+1].stopandsearch.length){
+          var temp = array[j].stopandsearch.length;
+          array[j].stopandsearch.length = array[j+1].stopandsearch.length;
+          array[j+1].stopandsearch.length = temp;
+        }
+      }
+    }
     */
 
     /* selectionSort
-
+    for(var i = 0; i < array.length-1; i++){
+      var index = i;
+      for(var j = i+1; j < array.length; j++){
+        if(array[j].stopandsearch.length < array[index].stopandsearch.length){
+          index = j;
+        }
+      }
+      var temp = array[index].stopandsearch.length;
+      array[index].stopandsearch.length = array[i].stopandsearch.length;
+      array[i].stopandsearch.length = temp;
+    }
     */
 
     /* insertSort
-
+    for(var i = 1; i < array.length; i++){
+      for(var j = i; j > 0; j--){
+        if(array[j].stopandsearch.length < array[j-1].stopandsearch.length){
+          var temp = array[j].stopandsearch.length;
+          array[j].stopandsearch.length = array[j-1].stopandsearch.length;
+          array[j-1].stopandsearch.length = temp;
+        }
+      }
+    }
     */
+    console.log(array);
   });
 }
