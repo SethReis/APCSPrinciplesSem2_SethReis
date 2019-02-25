@@ -107,26 +107,37 @@ function getJSON() {
     console.log("Number of comparisons made: " + compares + " comparisons");
     console.log("Number of swaps made: " + swaps + " swaps");
     console.log(array);
-    display(array);
+    display(array, 0);
   });
 }
 
-function display(array){
-  //var females = "Females";
+function display(array, doListeners){
+  //draw axes
   ctx.beginPath();
-  ctx.rect(50, 50, 10, canvas.height-100);
-  ctx.rect(50, canvas.height-50, canvas.width-100, 10);
-  ctx.fillStyle = 'rgb(0, 0, 0)';
-  ctx.fill();
-  ctx.strokeStyle = 'rgb(0, 0, 0)';
+  ctx.font = "10px Arial";
+  ctx.lineWidth = 4;
+  ctx.fillStyle = 'rgb(255, 255, 255)';
+  ctx.strokeStyle = 'rgb(255, 255, 255)';
+  ctx.setLineDash([10, 10]);
+  ctx.moveTo(10, canvas.height/2);
+  ctx.fillText("Longitude (-)", 10, canvas.height/2-10);
+  ctx.lineTo(canvas.width-10, canvas.height/2);
+  ctx.fillText("Longitude (+)", canvas.width-85, canvas.height/2-10);
   ctx.stroke();
-  // ctx.fillText("Males", canvas.width/2-20, canvas.height-25);
-  // for (var i = 0; i < 7; i++){
-  //   ctx.fillText(females.substr(i, 1), 30, (canvas.height/2-30)+8*i);
-  // }
+  ctx.setLineDash([10, 10]);
+  ctx.moveTo(canvas.width/2, 10);
+  ctx.fillText("Latitude (+)", canvas.width/2+5, 10);
+  ctx.lineTo(canvas.width/2, canvas.height-10);
+  ctx.fillText("Latitude (-)", canvas.width/2+5, canvas.height-20);
+  ctx.stroke();
+  ctx.fillStyle = 'rgb(0, 0, 0)';
+  ctx.strokeStyle = 'rgb(0, 0, 0)';
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  //draw circles
   for (var m = 0; m < array.length; m++){
-    var x = normalize(array[m].longitude, array[array.length-1].longitude, array[0].longitude)*(canvas.width-250)+100;
-    var y = normalize(array[m].latitude, array[0].latitude, array[array.length-1].latitude)*(canvas.height-200)+100;
+    var x = normalize(array[m].longitude, 100, -100)*(canvas.width/2)+canvas.width/4;
+    var y = normalize(array[m].latitude, -100, 100)*(canvas.height);
     var rad = normalize(array[m].balance, array[array.length-1].balance, array[0].balance)*50;
     ctx.beginPath();
     ctx.arc(x, y, rad, 0, 2 * Math.PI);
@@ -134,15 +145,28 @@ function display(array){
     ctx.fill();
     ctx.strokeStyle = 'rgb(0, 0, 0)';
     ctx.stroke();
-    addListener(x, y, rad, array[m]);
+    if (doListeners === 0){
+      addListener(x, y, rad, array[m], array);
+    }
   }
+  //draw title
+  ctx.beginPath();
+  ctx.lineWidth = 6;
+  ctx.moveTo(187, 40);
+  ctx.lineTo(canvas.width-185, 40);
+  ctx.stroke();
+  ctx.lineWidth = 1;
+  ctx.font = "42px Arial";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText("Balance of Working Class Individuals Based on Geographical Location", 185, 40);
+  ctx.font = "10px Arial";
 }
 
 function normalize(val, max, min){
   return (val - min) / (max - min);
 }
 
-function addListener(x, y, rad, array){
+function addListener(x, y, rad, array, outerArray){
   var x = x;
   var y = y;
   var rad = rad;
@@ -150,28 +174,23 @@ function addListener(x, y, rad, array){
   canvas.addEventListener('mousedown', function(event) {
     if(event.pageX > x - rad && event.pageX < x + rad && event.pageY > y - rad && event.pageY < y + rad){
       ctx.beginPath();
-      ctx.rect(x, y, 100 + array.latitude.length*5, 75);
+      ctx.rect(x, y, 150, 75);
       ctx.fillStyle = 'rgb(255, 255, 255)';
       ctx.fill();
       ctx.strokeStyle = 'rgb(255, 255, 255)';
       ctx.stroke();
       ctx.fillStyle = 'rgb(0, 0, 0)';
       ctx.strokeStyle = 'rgb(0, 0, 0)';
-      // ctx.fillText("Country: " + array.country, x, y+10);
-      // ctx.fillText("Males: " + array.longitude, x, y+30);
-      // ctx.fillText("Females: " + array.latitude, x, y+50);
-      // ctx.fillText("Total Pop.: " + array.balance, x, y+70);
+      ctx.fillText("Name: " + array.name, x, y+10);
+      ctx.fillText("Longitude: " + array.longitude, x, y+30);
+      ctx.fillText("Latitude: " + array.latitude, x, y+50);
+      ctx.fillText("Balance: $" + array.balance, x, y+70);
     }
   }, false);
   canvas.addEventListener('mouseup', function(event) {
     if(event.pageX > x - rad && event.pageX < x + rad && event.pageY > y - rad && event.pageY < y + rad){
-      ctx.beginPath();
-      ctx.clearRect(x-1, y-1, (100 + array.latitude.length*5)+2, 75+2);
-      ctx.fillStyle = 'rgb(0, 0, 0)';
-      ctx.strokeStyle = 'rgb(0, 0, 0)';
-      ctx.arc(x, y, rad, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.stroke();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      display(outerArray, 1);
     }
   }, false);
 }
