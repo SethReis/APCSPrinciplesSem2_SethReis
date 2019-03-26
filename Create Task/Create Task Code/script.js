@@ -36,10 +36,11 @@ function getJSON() {
       array[i] = json.data[i];
     }
     /*mySort
+
+    */
     var frontCount = 0;
     var backCount = array.length-1;
     console.time("Time Taken To Complete Sorting");
-
     for(var i = 0; i < array.length/2; i++){
       for(var j = frontCount; j < backCount; j++){
         compares++;
@@ -63,7 +64,6 @@ function getJSON() {
       frontCount++;
     }
     console.timeEnd("Time Taken To Complete Sorting");
-    */
 
     /*bubbleSort
     console.time("Time Taken To Complete Sorting");
@@ -100,8 +100,6 @@ function getJSON() {
     */
 
     /*insertSort
-
-    */
     console.time("Time Taken To Complete Sorting");
     for(var i = 1; i < array.length; i++){
       for(var j = i; j > 0; j--){
@@ -115,6 +113,8 @@ function getJSON() {
       }
     }
     console.timeEnd("Time Taken To Complete Sorting");
+    */
+
 
     //1-75, mega 1-52, final for ties 2-5
     for (var i = 0; i < array.length; i++){
@@ -188,9 +188,6 @@ function display(firstFiveArray, megaArray, tiesArray, mostCommon, leastCommon, 
     }
   }
   for (var m = 0; m < tiesArray.length; m++){
-    //var x = m*10+1200;
-    //var y = tiesArray[m];
-    //ctx.rect(x, canvas.height/2+450, 5, -y);
     if (tiesArray[m] > tiesArray[mostCommon[2]] || m === 0){
       mostCommon[2] = m;
     }
@@ -229,7 +226,6 @@ function display(firstFiveArray, megaArray, tiesArray, mostCommon, leastCommon, 
     ctx.fillText("Least Common: " + (leastCommon[2]+1) + ", " + (tiesArray[leastCommon[2]]) + " times", 900, canvas.height/2+70);
   }
 }
-
 
 function addListener(x, y, otherX, otherY, thisArray, firstFiveArray, megaArray, tiesArray, m, mostCommon, leastCommon){
   canvas.addEventListener('mousedown', function(event) {
