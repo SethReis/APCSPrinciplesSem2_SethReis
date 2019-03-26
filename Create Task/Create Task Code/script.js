@@ -17,6 +17,8 @@ function getJSON() {
   var firstFiveTotals = [];
   var megaTotals = [];
   var tiesTotals = [];
+  var mostCommon = [];
+  var leastCommon = [];
   for (var i = 0; i < 75; i++){
     firstFiveTotals[i] = 0;
   }
@@ -129,70 +131,135 @@ function getJSON() {
 
     console.log("Number of comparisons made: " + compares + " comparisons");
     console.log("Number of swaps made: " + swaps + " swaps");
-    display(firstFiveTotals, megaTotals, tiesTotals, 0);
+    display(firstFiveTotals, megaTotals, tiesTotals, mostCommon, leastCommon, 0);
   });
 }
 
-function display(firstFiveArray, megaArray, tiesArray, doListeners){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function display(firstFiveArray, megaArray, tiesArray, mostCommon, leastCommon, doListeners){
+  //draw labels
+  ctx.beginPath();
+  ctx.font = "80px Georgia";
+  ctx.fillText("Trends in Winning", 900, 150);
+  ctx.fillText("Lottery Numbers", 935, 225);
+  ctx.font = "40px Georgia";
+  ctx.fillText("First 5 Numbers", 300, canvas.height/2-200);
+  ctx.fillText("Jackpot Numbers", 300, canvas.height/2+210);
+  ctx.fillText("Tie Numbers", 1050, canvas.height/2+75);
+  ctx.font = "20px Georgia";
+  ctx.fillText("(Higher Number of Occurences = Chosen by People More Often)", 955, 265)
+  ctx.font = "15px Georgia";
   //draw bargraphs
   for (var m = 0; m < firstFiveArray.length; m++){
+    if (firstFiveArray[m] > firstFiveArray[mostCommon[0]] || m === 0){
+      mostCommon[0] = m;
+    }
+    if (firstFiveArray[m] < firstFiveArray[leastCommon[0]] || m === 0){
+      leastCommon[0] = m;
+    }
     var x = m*10+100;
     var y = firstFiveArray[m];
     ctx.rect(x, canvas.height/2, 5, -y);
     ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fill();
+    if (m === 0 || m === firstFiveArray.length-1){
+      ctx.fillText((m+1), x-2.5, canvas.height/2+10);
+    }
     if (doListeners === 0){
-      addListener(x, canvas.height/2, x+5, canvas.height/2-y, firstFiveArray[m], firstFiveArray, megaArray, tiesArray);
+      addListener(x, canvas.height/2, x+5, canvas.height/2-y, firstFiveArray, firstFiveArray, megaArray, tiesArray, m, mostCommon, leastCommon);
     }
   }
   for (var m = 0; m < megaArray.length; m++){
+    if (megaArray[m] > megaArray[mostCommon[1]] || m === 0){
+      mostCommon[1] = m;
+    }
+    if (megaArray[m] < megaArray[leastCommon[1]] || m === 0){
+      leastCommon[1] = m;
+    }
     var x = m*10+200;
     var y = megaArray[m];
     ctx.rect(x, canvas.height/2+300, 5, -y);
     ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fill();
+    if (m === 0 || m === megaArray.length-1){
+      ctx.fillText((m+1), x-2.5, canvas.height/2+310);
+    }
     if (doListeners === 0){
-      addListener(x, canvas.height/2+300, x+5, canvas.height/2+300-y, megaArray[m], firstFiveArray, megaArray, tiesArray);
+      addListener(x, canvas.height/2+300, x+5, canvas.height/2+300-y, megaArray, firstFiveArray, megaArray, tiesArray, m, mostCommon, leastCommon);
     }
   }
   for (var m = 0; m < tiesArray.length; m++){
-    var x = m*10+1200;
-    var y = tiesArray[m];
-    ctx.rect(x, canvas.height/2+450, 5, -y);
+    //var x = m*10+1200;
+    //var y = tiesArray[m];
+    //ctx.rect(x, canvas.height/2+450, 5, -y);
+    if (tiesArray[m] > tiesArray[mostCommon[2]] || m === 0){
+      mostCommon[2] = m;
+    }
+    if (tiesArray[m] < tiesArray[leastCommon[2]] || m === 0){
+      leastCommon[2] = m;
+    }
+    var x = tiesArray[m];
+    var y = canvas.height/2+100+m*10;
+    ctx.rect(canvas.width/2-100, y, x, 5);
     ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fill();
-    if (doListeners === 0){
-      addListener(x, canvas.height/2+450, x+5, canvas.height/2+450-y, tiesArray[m], firstFiveArray, megaArray, tiesArray);
+    if (m === 0){
+      ctx.fillText("No Tie", canvas.width/2-150, y+5);
+    } else if (m === tiesArray.length-1){
+      ctx.fillText((m+1), canvas.width/2-115, y+5);
     }
+    if (doListeners === 0){
+      addListener(canvas.width/2-100, y+5, canvas.width/2-100+x, y, tiesArray, firstFiveArray, megaArray, tiesArray, m, mostCommon, leastCommon);
+    }
+  }
+  //draw ranges
+  ctx.font = "10px Georgia";
+  ctx.beginPath();
+  ctx.fillText("Most Common: " + (mostCommon[0]+1) + ", " + (firstFiveArray[mostCommon[0]]) + " times", 450, canvas.height/2-180);
+  ctx.fillText("Most Common: " + (mostCommon[1]+1) + ", " + (megaArray[mostCommon[1]]) + " times", 450, canvas.height/2+230);
+  if (mostCommon[2] === 0){
+    ctx.fillText("Most Common: " + "No Tie" + ", " + (tiesArray[mostCommon[2]]) + " times", 900, canvas.height/2+60);
+  } else {
+    ctx.fillText("Most Common: " + (mostCommon[2]) + ", " + (tiesArray[mostCommon[2]]) + " times", 900, canvas.height/2+60);
+  }
+  ctx.fillText("Least Common: " + (leastCommon[0]+1) + ", " + (firstFiveArray[leastCommon[0]]) + " times", 450, canvas.height/2-170);
+  ctx.fillText("Least Common: " + (leastCommon[1]+1) + ", " + (megaArray[leastCommon[1]]) + " times", 450, canvas.height/2+240);
+  if (leastCommon[2] === 0){
+    ctx.fillText("Least Common: " + "No Tie" + ", " + (tiesArray[leastCommon[2]]) + " times", 900, canvas.height/2+70);
+  } else {
+    ctx.fillText("Least Common: " + (leastCommon[2]+1) + ", " + (tiesArray[leastCommon[2]]) + " times", 900, canvas.height/2+70);
   }
 }
 
-function normalize(val, max, min){
-  return (val - min) / (max - min);
-}
 
-function addListener(x, y, otherX, otherY, array, firstFiveArray, megaArray, tiesArray){
-  var x = x;
-  var y = y;
-  var otherX = otherX;
-  var otherY = otherY;
+function addListener(x, y, otherX, otherY, thisArray, firstFiveArray, megaArray, tiesArray, m, mostCommon, leastCommon){
   canvas.addEventListener('mousedown', function(event) {
     if(event.pageX > x && event.pageX < otherX && event.pageY < y && event.pageY > otherY){
       ctx.beginPath();
-      ctx.rect(event.pageX, event.pageY, 150, 75);
+      ctx.rect(event.pageX, event.pageY-25, 80, 25);
       ctx.fillStyle = 'rgb(255, 255, 255)';
       ctx.fill();
       ctx.strokeStyle = 'rgb(255, 255, 255)';
       ctx.stroke();
       ctx.fillStyle = 'rgb(0, 0, 0)';
       ctx.strokeStyle = 'rgb(0, 0, 0)';
+
+      if(thisArray === tiesArray){
+        if (m === 0){
+          ctx.fillText("Value: No Tie", event.pageX, event.pageY-15);
+        } else {
+          ctx.fillText("Value: " + (m+1), event.pageX, event.pageY-15);
+        }
+      } else {
+        ctx.fillText("Number: " + (m+1), event.pageX, event.pageY-15);
+      }
+      ctx.fillText("Occurences: " + thisArray[m], event.pageX, event.pageY-5);
     }
   }, false);
   canvas.addEventListener('mouseup', function(event) {
     if(event.pageX > x && event.pageX < otherX && event.pageY < y && event.pageY > otherY){
+      ctx.beginPath();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      display(firstFiveArray, megaArray, tiesArray, 1);
+      display(firstFiveArray, megaArray, tiesArray, mostCommon, leastCommon, 1);
     }
   }, false);
 }
